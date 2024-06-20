@@ -6,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:ignore="DiscouragedApi">
 
     <TextView
         android:id="@+id/myTextView"
@@ -25,7 +25,7 @@
         android:layout_width="124dp"
         android:layout_height="63dp"
         android:layout_marginTop="568dp"
-        android:text="%"
+        android:text="del"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.975"
@@ -41,6 +41,17 @@
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/button_Dot"
+        android:layout_width="124dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="652dp"
+        android:text="."
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.98"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -105,14 +116,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        style="@style/CalculatorButtonStyle"
         android:id="@+id/button_0"
-        android:layout_width="124dp"
-        android:layout_height="63dp"
         android:layout_marginTop="472dp"
         android:text="0"
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.027"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -227,8 +236,6 @@
         app:layout_constraintHorizontal_bias="0.975"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

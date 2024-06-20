@@ -1,6 +1,8 @@
 package com.example.kotlincalc2
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -12,6 +14,7 @@ import java.util.regex.Pattern
 import java.util.regex.Matcher
 
 class MainActivity : AppCompatActivity() {
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -39,35 +42,26 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.button_Minus).setOnClickListener { textView.text = textView.text.toString() + "-" }
         findViewById<Button>(R.id.button_Prod).setOnClickListener { textView.text = textView.text.toString() + "*" }
         findViewById<Button>(R.id.button_Div).setOnClickListener { textView.text = textView.text.toString() + "/" }
-        findViewById<Button>(R.id.button_Mod).setOnClickListener { textView.text = textView.text.toString() + "%" }
+        findViewById<Button>(R.id.button_Mod).setOnClickListener {
+            var s= textView.text.toString()
+            if (s.length > 0) {
+                s = s.substring(0, s.length - 1)
+            }
+            textView.text = s
+        }
+        findViewById<Button>(R.id.button_Dot).setOnClickListener { textView.text = textView.text.toString() + "." }
         findViewById<Button>(R.id.button_Clear).setOnClickListener { textView.text = "" }
 
         fun replaceMulAndDiv(s: String): String {
-            val pattern = Pattern.compile("([0-9])([*/])([0-9])")
+            val pattern = Pattern.compile("(-?\\d+\\.\\d+|-?\\d+)([*/])(-?\\d+\\.\\d+|-?\\d+)")
             val matcher = pattern.matcher(s)
             if (matcher.find()) {
-                val n1 = matcher.group(1).toInt()
-                val n2 = matcher.group(3).toInt()
+                val n1 = matcher.group(1).toDouble()
+                val n2 = matcher.group(3).toDouble()
                 val result = if (matcher.group(2) == "*") {
-                    (n1 * n2).toString()
+                    String.format("%.5f", n1 * n2)
                 } else {
-                    (n1 / n2).toString()
-                }
-                return s.replace(matcher.group(0), result)
-            } else {
-                return s
-            }
-        }
-        fun replaceSumAndDiff(s: String): String {
-            val pattern = Pattern.compile("([0-9])([+-])([0-9])")
-            val matcher = pattern.matcher(s)
-            if (matcher.find()) {
-                val n1 = matcher.group(1).toInt()
-                val n2 = matcher.group(3).toInt()
-                val result = if (matcher.group(2) == "+") {
-                    (n1 + n2).toString()
-                } else {
-                    (n1 - n2).toString()
+                    String.format("%.5f", n1 / n2)
                 }
                 return s.replace(matcher.group(0), result)
             } else {
@@ -75,14 +69,57 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        fun replaceSumAndDiff(s: String): String {
+            val pattern = Pattern.compile("(-?\\d+\\.\\d+|-?\\d+)([+-])(-?\\d+\\.\\d+|-?\\d+)")
+            val matcher = pattern.matcher(s)
+            if (matcher.find()) {
+                val n1 = matcher.group(1).toDouble()
+                val n2 = matcher.group(3).toDouble()
+                val result = if (matcher.group(2) == "+") {
+                    String.format("%.5f", n1 + n2)
+                } else {
+                    String.format("%.5f", n1 - n2)
+                }
+                return s.replace(matcher.group(0), result)
+            } else {
+                return s
+            }
+        }
+
+
         findViewById<Button>(R.id.button_Equal).setOnClickListener{
             var s = textView.text.toString()
+            var k = 0
             while ("*" in s || "/" in s) {
+                s = s.replace(",", ".")
                 s = replaceMulAndDiv(s)
+                s = s.replace(",", ".")
+                k++
+                if (k >100)
+                    break
             }
+            //Log.d("DEBUG", s)
+            k = 0
             while ("+" in s || "-" in s) {
+                s = s.replace(",", ".")
                 s = replaceSumAndDiff(s)
+                s = s.replace(",", ".")
+                k++
+                if (k >100)
+                    break
             }
+            s = s.replace(",", ".")
+            s = s.replace(".00000", "")
+            s = s.replace(",00000", "")
+            if (s.endsWith("0000") and (s.contains(".") or s.contains(",")))
+                s = s.substring(0, s.length - 4)
+            if (s.endsWith("000") and (s.contains(".") or s.contains(",")))
+                s = s.substring(0, s.length - 3)
+            if (s.endsWith("00") and (s.contains(".") or s.contains(",")))
+                s = s.substring(0, s.length - 2)
+            if (s.endsWith("0") and (s.contains(".") or s.contains(",")))
+                s = s.substring(0, s.length - 1)
+
             textView.text = s
         }
     }
